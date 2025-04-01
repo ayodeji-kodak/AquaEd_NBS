@@ -1,0 +1,47 @@
+#define BLYNK_PRINT Serial  // Enable Serial Monitor Debugging
+#include <WiFi.h>         // WiFi Library for Arduino UNO R4 WiFi
+#define BLYNK_TEMPLATE_ID "TMPL5M-ZwX-Z1"
+#define BLYNK_TEMPLATE_NAME "AquaEdNBS"
+#define BLYNK_AUTH_TOKEN "PnP2ZLCNgfOy7Xsd6Yit9PqDGmvktB1U"
+#include <BlynkSimpleWifi.h>  // Correct library for WiFiS3 boards
+
+
+// Blynk Authentication Token (Replace with your actual token)
+char auth[] = "PnP2ZLCNgfOy7Xsd6Yit9PqDGmvktB1U"; 
+
+const char* ssid = "Ayo_EXT";      // Replace with your Wi-Fi SSID
+const char* password = "Capsam2005.";  // Replace with your Wi-Fi Password
+
+// Define relay pin for pump
+const int fill1 = 2; 
+
+// Blynk function to control the pump (Invert logic)
+BLYNK_WRITE(V0) {  
+  int pumpState = param.asInt(); // Read value from Blynk app (0 or 1)
+  digitalWrite(fill1, pumpState ? LOW : HIGH); // Invert logic
+  Blynk.virtualWrite(V2, pumpState ? "ON" : "OFF"); // Update Blynk status
+}
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(fill1, OUTPUT);
+  digitalWrite(fill1, HIGH); // Ensure pump is OFF at startup
+
+  Serial.println("Connecting to Wi-Fi...");
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+  }
+
+  Serial.println("\nConnected to Wi-Fi!");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP()); 
+
+  Blynk.begin(auth, ssid, password); // Connect to Blynk
+}
+
+void loop() {
+  Blynk.run(); // Keep Blynk connection active
+}
