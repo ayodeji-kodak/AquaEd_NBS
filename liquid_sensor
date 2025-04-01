@@ -1,0 +1,25 @@
+// Define the sensor pin
+const int liquidSensorPin = 7; // Connect the sensor output to D7 (or any other digital pin)
+
+void setup() {
+  // Initialize serial communication
+  Serial.begin(115200);
+
+  // Set the sensor pin as input
+  pinMode(liquidSensorPin, INPUT);
+}
+
+void loop() {
+  // Read the state of the liquid sensor
+  int liquidStatus = digitalRead(liquidSensorPin); 
+
+  // Print the sensor status to the Serial Monitor
+  if (liquidStatus == LOW) {
+    Serial.println("No Liquid Detected");
+  } else {
+    Serial.println("Liquid Detected");
+  }
+
+  // Add a short delay to avoid flooding the serial monitor
+  delay(500);
+}
